@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="clear">#00000000</color>
+    <color name="almost_clear">#1E000000</color>
+    <color name="radius_blue">#3ABEEE</color>
+    <color name="radius_text_color">#666666</color>
+    <color name="radius_light_grey">#C8C8C8</color>
+
+
+    
+</resources>
