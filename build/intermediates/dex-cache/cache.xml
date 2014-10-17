@@ -12,7 +12,7 @@
         jar="/Users/matthewbtyler/Documents/4DK/GitHub/campaignkit-reference-android-studio/app/build/intermediates/exploded-aar/com.radiusnetworks/campaignkit-android/v0.0.3/libs/proximitykit-android.jar"
         jumboMode="false"
         revision="19.1.0"
-        sha1="df76158b73fe2bbc72b9e27fc5550bee005b556e"/>
+        sha1="305b8c8eb8c60a0958b1abad858a01f7bb25167c"/>
     <item
         dex="/Users/matthewbtyler/Documents/4DK/GitHub/campaignkit-reference-android-studio/app/build/intermediates/pre-dexed/debug/classes-6ac793b160cf69f177b43863f96e330e024540da.jar"
         jar="/Users/matthewbtyler/Documents/4DK/GitHub/campaignkit-reference-android-studio/app/build/intermediates/exploded-aar/com.android.support/appcompat-v7/19.1.0/classes.jar"
@@ -24,7 +24,7 @@
         jar="/Users/matthewbtyler/Documents/4DK/GitHub/campaignkit-reference-android-studio/app/build/intermediates/exploded-aar/com.radiusnetworks/campaignkit-android/v0.0.3/libs/android-beacon-library.jar"
         jumboMode="false"
         revision="19.1.0"
-        sha1="33cf66b2b23ac5b3e10a52068e3b0e20c0e1a8e1"/>
+        sha1="cee7cedc3ea3e8d4f9056ec65e846e2585f1238d"/>
     <item
         dex="/Users/matthewbtyler/Documents/4DK/GitHub/campaignkit-reference-android-studio/app/build/intermediates/pre-dexed/debug/support-v4-19.1.0-ed6e0b7d365aa92fed89ccafacd40fdad99b7537.jar"
         jar="/Applications/Android Studio 0.4.2/Android Studio.app/sdk/extras/android/m2repository/com/android/support/support-v4/19.1.0/support-v4-19.1.0.jar"
@@ -42,6 +42,6 @@
         jar="/Users/matthewbtyler/Documents/4DK/GitHub/campaignkit-reference-android-studio/app/build/intermediates/exploded-aar/com.radiusnetworks/campaignkit-android/v0.0.3/classes.jar"
         jumboMode="false"
         revision="19.1.0"
-        sha1="33bb674b0b364715fcf82663a26e0e39366053ec"/>
+        sha1="cd5ae3e00e9ef6447c17615e78fd2d1672b5ec47"/>
 
 </pre-dex-items>
