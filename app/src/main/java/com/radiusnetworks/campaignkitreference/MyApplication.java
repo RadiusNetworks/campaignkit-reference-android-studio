@@ -156,23 +156,8 @@ public class MyApplication extends Application implements CampaignKitNotifier {
      * Records an analytics event that will be aggregated and reported within the Campaign Kit.
      *
      */
-    public void recordAnalytics(CampaignKitNotifier.CKAnalyticsType type, Campaign campaign, Place place){
-        _ckManager.recordAnalytics(type, campaign, place);
-    }
-    public void recordAnalytics(CampaignKitNotifier.CKAnalyticsType type, String campaignId , String placeId){
-        _ckManager.recordAnalytics(type, campaignId, placeId);
-    }
-    public void recordAnalytics(CampaignKitNotifier.CKAnalyticsType type, int campaignIdAsInt, int placeIdAsInt){
-        _ckManager.recordAnalytics(type, campaignIdAsInt, placeIdAsInt);
-    }
-    public void recordAnalytics(CampaignKitNotifier.CKAnalyticsType type, Campaign campaign){
-        _ckManager.recordAnalytics(type, campaign);
-    }
-    public void recordAnalytics(CampaignKitNotifier.CKAnalyticsType type, String campaignId){
-        _ckManager.recordAnalytics(type, campaignId);
-    }
-    public void recordAnalytics(CampaignKitNotifier.CKAnalyticsType type, int campaignIdAsInt){
-        _ckManager.recordAnalytics(type, campaignIdAsInt);
+    public void setCampaignViewed(Campaign c){
+        _ckManager.setCampaignViewed(c);
     }
 
 }

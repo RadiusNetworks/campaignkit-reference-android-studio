@@ -248,7 +248,7 @@ public class SlidingTabsColorsFragment extends Fragment {
 			Log.i("SlidingTabsColorsFragment","SampleFragmentPagerAdapter.getItem position = "+i);
 			if (mActivity != null && mCampaignArray != null && mCampaignArray.get(i) != null)
 				((MyApplication) mActivity.getApplication())
-				.recordAnalytics(CampaignKitNotifier.CKAnalyticsType.viewed, mCampaignArray.get(i));
+				.setCampaignViewed(mCampaignArray.get(i));
 			else
 				Log.i("SlidingTabsColorsFragment","SampleFragmentPagerAdapter.what's null? mActivity="
 						+mActivity+". mCampaignArray="+mCampaignArray);
