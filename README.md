@@ -20,7 +20,7 @@ Requirements for use:
 #Setup Instructions
 
 
-* Open Android Studio v0.8.6 with gradle 1.12. If you don't have those yet, you can find them [here](https://developer.android.com/sdk/installing/studio.html) and [here](https://services.gradle.org/distributions/gradle-1.12-all.zip).
+* Open Android Studio v1.0 with gradle 2.2.1 If you don't have those yet, you can find them [here](https://developer.android.com/sdk/installing/studio.html) and [here](https://services.gradle.org/distributions/gradle-2.2.1-all.zip).
 
 * Import the campaignkit-reference-android-studio project into Android Studio.
 
