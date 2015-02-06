@@ -20,8 +20,11 @@ import com.radiusnetworks.campaignkit.CampaignKitNotifier;
 import com.radiusnetworks.campaignkit.CampaignKitManager;
 import com.radiusnetworks.campaignkit.CampaignNotificationBuilder;
 import com.radiusnetworks.campaignkit.Place;
+import com.radiusnetworks.proximity.ProximityKitManager;
 import com.radiusnetworks.proximity.geofence.GooglePlayServicesException;
 
+
+import org.altbeacon.beacon.BeaconParser;
 
 import java.util.ArrayList;
 
