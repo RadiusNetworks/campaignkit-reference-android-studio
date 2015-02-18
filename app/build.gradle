@@ -22,11 +22,11 @@ android {
     }
 }
 dependencies {
-    compile ('com.google.android.gms:play-services:5.+') {
+    compile('com.google.android.gms:play-services:5.+') {
         exclude module: 'support-v4'
     }
     compile fileTree(dir: 'libs', include: ['*.jar'])
-    compile ('com.android.support:appcompat-v7:19.+') {
+    compile('com.android.support:appcompat-v7:19.+') {
         exclude module: 'support-v4'
     }
     compile 'com.radiusnetworks:campaignkit-android:+@aar'
