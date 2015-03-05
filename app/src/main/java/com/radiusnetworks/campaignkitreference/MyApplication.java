@@ -97,6 +97,7 @@ public class MyApplication extends Application implements CampaignKitNotifier {
     @Override
     public void didDetectPlace(Place place, CKEventType event) {
         Log.i(TAG,"didDetectPlace.  EventType: "+event.toString()+"  Place: "+place.toString());
+        Log.d(TAG,"place distance: "+place.getDistance());
 
 
     }
