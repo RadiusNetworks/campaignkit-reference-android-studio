@@ -1,30 +1,14 @@
 package com.radiusnetworks.campaignkitreference;
 
-import android.app.AlertDialog;
 import android.app.Application;
-import android.app.Dialog;
-import android.app.DialogFragment;
-import android.content.Context;
-import android.content.DialogInterface;
-import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.os.Bundle;
 import android.util.Log;
 
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.GooglePlayServicesUtil;
-import com.radiusnetworks.campaignkitreference.MainActivity;
-import com.radiusnetworks.campaignkitreference.R;
 import com.radiusnetworks.campaignkit.Campaign;
-import com.radiusnetworks.campaignkit.CampaignKitNotifier;
 import com.radiusnetworks.campaignkit.CampaignKitManager;
+import com.radiusnetworks.campaignkit.CampaignKitNotifier;
 import com.radiusnetworks.campaignkit.CampaignNotificationBuilder;
 import com.radiusnetworks.campaignkit.Place;
-import com.radiusnetworks.proximity.ProximityKitManager;
 import com.radiusnetworks.proximity.geofence.GooglePlayServicesException;
-
-
-import org.altbeacon.beacon.BeaconParser;
 
 import java.util.ArrayList;
 
