@@ -1,31 +1,26 @@
 package com.radiusnetworks.campaignkitreference;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
-import android.os.Build;
-import android.os.Bundle;
-import android.widget.TableRow;
-
-
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.Build;
+import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.ArrayAdapter;
+import android.widget.TableRow;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
-import com.radiusnetworks.campaignkitreference.DetailActivity;
-import com.radiusnetworks.campaignkitreference.MyApplication;
-import com.radiusnetworks.campaignkitreference.R;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * The Main <code>Activity</code> for the CampaignKit's Demo Client.
