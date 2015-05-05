@@ -22,7 +22,6 @@ android {
     }
 }
 dependencies {
-
     compile('com.google.android.gms:play-services:6.5.87') {
         exclude module: 'support-v4'
     }
@@ -31,6 +30,7 @@ dependencies {
         exclude module: 'support-v4'
     }
     compile 'com.radiusnetworks:campaignkit-android:+@aar'
+    compile 'com.android.support:support-v4:22.1.0'
 }
 
 repositories {
