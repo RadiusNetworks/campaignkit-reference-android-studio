@@ -13,7 +13,7 @@ Requirements for use:
 
 * Google Play Services library version 5.+ set as a dependency.
 
-* CampaignKit.properties file downloaded from campaignkit.radiusnetworks.com.
+* CampaignKit.properties file downloaded from https://campaignkit.radiusnetworks.com.
 
 
 
