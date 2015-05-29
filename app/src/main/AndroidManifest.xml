@@ -1,5 +1,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+          xmlns:tools="http://schemas.android.com/tools"
           package="com.radiusnetworks.campaignkitreference">
+
+    <uses-sdk tools:overrideLibrary="com.google.android.gms" />
 
     <!-- minimum permissions for ibeacons -->
     <uses-permission android:name="android.permission.BLUETOOTH" />
