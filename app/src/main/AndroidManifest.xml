@@ -1,11 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.radiusnetworks.campaignkitreference"
-    android:versionCode="3"
-    android:versionName="1.2" >
-    
-    <uses-sdk
-        android:minSdkVersion="18"
-        android:targetSdkVersion="19" />
+          package="com.radiusnetworks.campaignkitreference">
 
     <!-- minimum permissions for ibeacons -->
     <uses-permission android:name="android.permission.BLUETOOTH" />
