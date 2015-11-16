@@ -30,13 +30,30 @@ import java.util.Properties;
 public class MyApplication extends Application implements CampaignKitNotifier {
     public static final String TAG = "MyApplication";
 
-    public static ArrayList<Campaign> triggeredCampaignArray = new ArrayList<Campaign>(); //all campaigns with their beacon within range, in order of appearance
-    public static ArrayList<String> triggeredCampaignTitles = new ArrayList<String>(); //titles of all campaigns with their beacon within range, in same order
-    public CampaignKitManager _ckManager;
-    private MainActivity _mainActivity = null;
+    /**
+     * Storage for an instance of the manager
+     */
+    private static CampaignKitManager ckManager = null;
 
-    // Object to use as a thread-safe lock
-    private static final Object sCkManagerLock = new Object();
+    /**
+     * Object to use as a thread-safe lock
+     */
+    private static final Object ckManagerLock = new Object();
+
+    /**
+     * Current main activity for notifications.
+     */
+    private static volatile MainActivity mainActivity = null;
+
+    /**
+     * All campaigns with their beacon within range, in order of appearance
+     */
+    public static ArrayList<Campaign> triggeredCampaigns = new ArrayList<Campaign>();
+
+    /**
+     * Titles of all campaigns with their beacon within range, in same order
+     */
+    public static ArrayList<String> triggeredCampaignTitles = new ArrayList<String>();
 
     @Override
     public void onCreate() {
@@ -50,31 +67,31 @@ public class MyApplication extends Application implements CampaignKitNotifier {
          * single manager instance is created inside an `Activity` or other Android/Java component.
          * We're including the pattern here to show a method of ensuring a singleton instance.
          */
-        synchronized (sCkManagerLock) {
-            if (_ckManager == null) {
-                _ckManager = CampaignKitManager.getInstance(this, loadConfig());
+        synchronized (ckManagerLock) {
+            if (ckManager == null) {
+                ckManager = CampaignKitManager.getInstance(this, loadConfig());
             }
         }
 
         try {
-            _ckManager.enableGeofences();
+            ckManager.enableGeofences();
         } catch (GooglePlayServicesException gpse) {
             gpse.printStackTrace();
         } catch (Exception e) {
             e.printStackTrace();
         }
-        _ckManager.setNotifier(this);
+        ckManager.setNotifier(this);
 
-        _ckManager.start();
+        ckManager.start();
     }
 
     @Override
     public void didFindCampaign(Campaign campaign) {
         //adding Campaign to triggeredCampaignArray, this will force it to be shown on the triggeredCampaignList
-        triggeredCampaignArray.add(campaign);
+        triggeredCampaigns.add(campaign);
 
         //sending notification or alert, depending on whether app is in background or foreground
-        new CampaignNotificationBuilder(_mainActivity, campaign)
+        new CampaignNotificationBuilder(mainActivity, campaign)
                 .setSmallIcon(R.drawable.ic_launcher)
                 .setOnClickActivity(DetailActivity.class)
                 .show();
@@ -105,7 +122,7 @@ public class MyApplication extends Application implements CampaignKitNotifier {
     }
 
     public void setMainActivity(MainActivity _mainActivity) {
-        this._mainActivity = _mainActivity;
+        this.mainActivity = _mainActivity;
     }
 
     /**
@@ -113,9 +130,9 @@ public class MyApplication extends Application implements CampaignKitNotifier {
      * @return refreshed triggeredCampaignTitles <code>Arraylist</code>.
      */
     public ArrayList<String> getTriggeredCampaignTitlesList(){
-        if (triggeredCampaignArray != null){
+        if (triggeredCampaigns != null){
             triggeredCampaignTitles.clear();
-            for (Campaign c : triggeredCampaignArray){
+            for (Campaign c : triggeredCampaigns){
                 triggeredCampaignTitles.add(c.getTitle());
             }
         }
@@ -123,12 +140,12 @@ public class MyApplication extends Application implements CampaignKitNotifier {
     }
 
     public ArrayList<Campaign> getTriggeredCampaignArray(){
-        return triggeredCampaignArray;
+        return triggeredCampaigns;
     }
 
     public Campaign getCampaignFromList(int positionOnList){
-        if (triggeredCampaignArray != null  &&  triggeredCampaignArray.size() > positionOnList){
-            return triggeredCampaignArray.get(positionOnList);
+        if (triggeredCampaigns != null  &&  triggeredCampaigns.size() > positionOnList){
+            return triggeredCampaigns.get(positionOnList);
         }
         return null;
     }
@@ -138,8 +155,8 @@ public class MyApplication extends Application implements CampaignKitNotifier {
      * campaigns associated with newly triggered beacons.
      */
     private void refreshMainActivityList(){
-        if (_mainActivity != null) {
-            _mainActivity.refreshVisibleList();
+        if (mainActivity != null) {
+            mainActivity.refreshVisibleList();
         }
         else {
             Log.d(TAG, "Main activity not started yet.");
@@ -147,10 +164,10 @@ public class MyApplication extends Application implements CampaignKitNotifier {
     }
 
     public void removeCampaign(int position){
-        _ckManager.removeCampaign(getCampaignFromList(position));
-        triggeredCampaignArray.clear();
-        triggeredCampaignArray = _ckManager.getFoundCampaigns();
-        Log.d(TAG,"after removing. triggeredCampaignArray size = "+triggeredCampaignArray.size());
+        ckManager.removeCampaign(getCampaignFromList(position));
+        triggeredCampaigns.clear();
+        triggeredCampaigns = ckManager.getFoundCampaigns();
+        Log.d(TAG,"after removing. triggeredCampaignArray size = "+triggeredCampaigns.size());
 
         refreshMainActivityList();
     }
@@ -161,7 +178,7 @@ public class MyApplication extends Application implements CampaignKitNotifier {
      *
      */
     public void setCampaignViewed(Campaign c){
-        _ckManager.setCampaignViewed(c);
+        ckManager.setCampaignViewed(c);
     }
 
     private Configuration loadConfig() {
