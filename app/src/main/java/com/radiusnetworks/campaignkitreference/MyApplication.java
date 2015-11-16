@@ -48,12 +48,12 @@ public class MyApplication extends Application implements CampaignKitNotifier {
     /**
      * All campaigns with their beacon within range, in order of appearance
      */
-    public static ArrayList<Campaign> triggeredCampaigns = new ArrayList<Campaign>();
+    public static ArrayList<Campaign> triggeredCampaigns = new ArrayList<>();
 
     /**
      * Titles of all campaigns with their beacon within range, in same order
      */
-    public static ArrayList<String> triggeredCampaignTitles = new ArrayList<String>();
+    public static ArrayList<String> triggeredCampaignTitles = new ArrayList<>();
 
     @Override
     public void onCreate() {
