@@ -92,13 +92,6 @@ public class MyApplication extends Application implements CampaignKitNotifier {
             }
         }
 
-        try {
-            ckManager.enableGeofences();
-        } catch (GooglePlayServicesException gpse) {
-            gpse.printStackTrace();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
         /*
          * Set the desired callback before calling `start()`.
          *
@@ -108,8 +101,7 @@ public class MyApplication extends Application implements CampaignKitNotifier {
         ckManager.setNotifier(this);
 
         /*
-         * Now that we potentially have geofences setup and our notifier registered, we are ready
-         * to start Campaign Kit.
+         * Now that we have our notifier registered we are ready to start Campaign Kit.
          */
         ckManager.start();
     }
