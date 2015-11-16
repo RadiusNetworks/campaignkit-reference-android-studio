@@ -13,7 +13,6 @@ import com.radiusnetworks.campaignkit.Place;
 import com.radiusnetworks.proximity.geofence.GooglePlayServicesException;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Properties;
 
@@ -327,12 +326,8 @@ public class MyApplication extends Application implements CampaignKitNotifier {
      */
     private Configuration loadConfig() {
         Properties properties = new Properties();
-        InputStream in = getClassLoader().getResourceAsStream("CampaignKit.properties");
-        if (in == null) {
-            throw new IllegalStateException("Unable to find CampaignKit.properties files");
-        }
         try {
-            properties.load(in);
+            properties.load(getAssets().open("CampaignKit.properties"));
         } catch (IOException e) {
             throw new IllegalStateException("Unable to load properties file!", e);
         }
