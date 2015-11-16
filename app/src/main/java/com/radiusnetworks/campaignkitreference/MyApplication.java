@@ -7,10 +7,14 @@ import com.radiusnetworks.campaignkit.Campaign;
 import com.radiusnetworks.campaignkit.CampaignKitManager;
 import com.radiusnetworks.campaignkit.CampaignKitNotifier;
 import com.radiusnetworks.campaignkit.CampaignNotificationBuilder;
+import com.radiusnetworks.campaignkit.Configuration;
 import com.radiusnetworks.campaignkit.Place;
 import com.radiusnetworks.proximity.geofence.GooglePlayServicesException;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Properties;
 
 /**
  * The <code>Application</code> class for the CampaignKit's Demo Client. It is ideal
@@ -31,11 +35,26 @@ public class MyApplication extends Application implements CampaignKitNotifier {
     public CampaignKitManager _ckManager;
     private MainActivity _mainActivity = null;
 
+    // Object to use as a thread-safe lock
+    private static final Object sCkManagerLock = new Object();
 
     @Override
     public void onCreate() {
         super.onCreate();
-        _ckManager = CampaignKitManager.getInstanceForApplication(this);
+
+        /*
+         * The app is responsible for handling the singleton instance of the Campaign Kit manager.
+         * To ensure we have a single instance we synchronize our creation process.
+         *
+         * While this is not necessary inside an `Application` subclass it is necessary if the
+         * single manager instance is created inside an `Activity` or other Android/Java component.
+         * We're including the pattern here to show a method of ensuring a singleton instance.
+         */
+        synchronized (sCkManagerLock) {
+            if (_ckManager == null) {
+                _ckManager = CampaignKitManager.getInstance(this, loadConfig());
+            }
+        }
 
         try {
             _ckManager.enableGeofences();
@@ -47,7 +66,6 @@ public class MyApplication extends Application implements CampaignKitNotifier {
         _ckManager.setNotifier(this);
 
         _ckManager.start();
-
     }
 
     @Override
@@ -146,4 +164,17 @@ public class MyApplication extends Application implements CampaignKitNotifier {
         _ckManager.setCampaignViewed(c);
     }
 
+    private Configuration loadConfig() {
+        Properties properties = new Properties();
+        InputStream in = getClassLoader().getResourceAsStream("CampaignKit.properties");
+        if (in == null) {
+            throw new IllegalStateException("Unable to find CampaignKit.properties files");
+        }
+        try {
+            properties.load(in);
+        } catch (IOException e) {
+            throw new IllegalStateException("Unable to load properties file!", e);
+        }
+        return new Configuration(properties);
+    }
 }
