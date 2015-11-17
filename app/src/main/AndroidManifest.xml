@@ -2,7 +2,8 @@
           xmlns:tools="http://schemas.android.com/tools"
           package="com.radiusnetworks.campaignkitreference">
 
-    <uses-sdk tools:overrideLibrary="com.google.android.gms" />
+    <uses-sdk
+        tools:overrideLibrary="com.google.android.gms,com.google.android.gms.base,com.google.android.gms.location,com.google.android.gms.maps" />
 
     <!-- minimum permissions for ibeacons -->
     <uses-permission android:name="android.permission.BLUETOOTH" />
