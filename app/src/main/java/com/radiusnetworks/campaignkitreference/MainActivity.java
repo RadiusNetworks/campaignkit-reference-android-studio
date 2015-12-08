@@ -41,15 +41,16 @@ public class MainActivity extends Activity {
 
         final Context that = this;
         campaignsButton = (Button) findViewById(R.id.campaignsButton);
-        campaignsButton.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //Sending to DetailActivity
-                Intent intent = new Intent();
-                intent.setClass(_context, DetailActivity.class);
-                startActivity(intent);
-            }
-        });
+        campaignsButton.setOnClickListener(
+                new OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent intent = new Intent();
+                        intent.setClass(that, DetailActivity.class);
+                        startActivity(intent);
+                    }
+                }
+        );
         updateCampaignsVisibility();
     }
 
@@ -57,14 +58,17 @@ public class MainActivity extends Activity {
      * Refreshes <code>Listview</code> with current campaign titles.
      */
     public void refreshVisibleList() {
-        runOnUiThread(new Runnable() {
-            public void run() {
-                updateCampaignsVisibility();
-            }
-        });
+        runOnUiThread(
+                new Runnable() {
+                    @Override
+                    public void run() {
+                        updateCampaignsVisibility();
+                    }
+                }
+        );
     }
 
-    private boolean areCampaignsTriggeredNow(){
+    private boolean areCampaignsTriggeredNow() {
         MyApplication app = (MyApplication) getApplication();
         return !app.getTriggeredCampaignArray().isEmpty();
     }
@@ -75,52 +79,61 @@ public class MainActivity extends Activity {
     }
 
     private void verifyBluetooth() {
-
         try {
-            if (!org.altbeacon.beacon.BeaconManager.getInstanceForApplication(this).checkAvailability()) {
-                Log.e(TAG,"Bluetooth not enabled.");
+            if (!org.altbeacon.beacon.BeaconManager.getInstanceForApplication(this)
+                                                   .checkAvailability()) {
+                Log.e(TAG, "Bluetooth not enabled.");
                 final AlertDialog.Builder builder = new AlertDialog.Builder(this);
                 builder.setTitle("Bluetooth not enabled");
-                builder.setMessage("Please enable bluetooth in settings and restart this application.");
+                builder.setMessage(
+                        "Please enable bluetooth in settings and restart this application."
+                );
                 builder.setPositiveButton(android.R.string.ok, null);
                 if (android.os.Build.VERSION.SDK_INT >= 17) {
-                    builder.setOnDismissListener(new DialogInterface.OnDismissListener() {
-                        @Override
-                        public void onDismiss(DialogInterface dialog) {
-                            dialog.dismiss();
-                        }
-                    });
+                    builder.setOnDismissListener(
+                            new DialogInterface.OnDismissListener() {
+                                @Override
+                                public void onDismiss(DialogInterface dialog) {
+                                    dialog.dismiss();
+                                }
+                            }
+                    );
                 } else {
-                    builder.setOnCancelListener(new DialogInterface.OnCancelListener() {
-                        @Override
-                        public void onCancel(DialogInterface dialog) {
-                            dialog.dismiss();
-                        }
-                    });
+                    builder.setOnCancelListener(
+                            new DialogInterface.OnCancelListener() {
+                                @Override
+                                public void onCancel(DialogInterface dialog) {
+                                    dialog.dismiss();
+                                }
+                            }
+                    );
                 }
                 builder.show();
             }
-        }
-        catch (RuntimeException e) {
-            Log.e(TAG,"Bluetooth LE not available.");
+        } catch (RuntimeException e) {
+            Log.e(TAG, "Bluetooth LE not available.");
             final AlertDialog.Builder builder = new AlertDialog.Builder(this);
             builder.setTitle("Bluetooth LE not available");
             builder.setMessage("Sorry, this device does not support Bluetooth LE.");
             builder.setPositiveButton(android.R.string.ok, null);
             if (android.os.Build.VERSION.SDK_INT >= 17) {
-                builder.setOnDismissListener(new DialogInterface.OnDismissListener() {
-                    @Override
-                    public void onDismiss(DialogInterface dialog) {
-                        dialog.dismiss();
-                    }
-                });
+                builder.setOnDismissListener(
+                        new DialogInterface.OnDismissListener() {
+                            @Override
+                            public void onDismiss(DialogInterface dialog) {
+                                dialog.dismiss();
+                            }
+                        }
+                );
             } else {
-                builder.setOnCancelListener(new DialogInterface.OnCancelListener() {
-                    @Override
-                    public void onCancel(DialogInterface dialog) {
-                        dialog.dismiss();
-                    }
-                });
+                builder.setOnCancelListener(
+                        new DialogInterface.OnCancelListener() {
+                            @Override
+                            public void onCancel(DialogInterface dialog) {
+                                dialog.dismiss();
+                            }
+                        }
+                );
             }
             builder.show();
         }
