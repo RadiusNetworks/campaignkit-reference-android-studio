@@ -5,11 +5,20 @@
     <uses-sdk
         tools:overrideLibrary="com.google.android.gms,com.google.android.gms.base,com.google.android.gms.location,com.google.android.gms.maps" />
 
-    <!-- minimum permissions for ibeacons -->
+    <!-- minimum permissions for BLE beacons -->
     <uses-permission android:name="android.permission.BLUETOOTH" />
     <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
-    <uses-permission android:name="android.permission.INTERNET" />
+
+    <!-- BLE background detection requires some permissions (these are runtime in Android 6) - uncomment this if you are not using Geofences -->
+    <!--<uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />-->
+
+    <!-- geofence usage requires some permissions (these are runtime in Android 6) -->
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+
+    <!-- necessary for syncing with the servers -->
+    <uses-permission android:name="android.permission.INTERNET" />
+
+    <!-- startup services on reboot -->
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
 
     <!-- gives permission to wake up app long enough to send campaign request while app is in background (every 5 min) -->
