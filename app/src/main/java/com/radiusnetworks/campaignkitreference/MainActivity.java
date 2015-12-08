@@ -1,79 +1,48 @@
 package com.radiusnetworks.campaignkitreference;
 
-import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.Dialog;
-import android.app.DialogFragment;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.widget.ArrayAdapter;
-import android.widget.TableRow;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 
-import java.util.HashMap;
-import java.util.Map;
-
 /**
  * The Main <code>Activity</code> for the CampaignKit's Demo Client.
- *
- * <p>
+ * <p/>
+ * <p/>
  * A <code>ListFragment</code> is utilized in this class to display campaigns sent in from the
  * CampaignKitManager.getFoundCampaigns() method.
- *
- *
- *
- * @author Matt Tyler
- *
  */
 public class MainActivity extends Activity {
     public static final String TAG = "MainActivity";
-    Map<String,TableRow> rowMap = new HashMap<String,TableRow>();
-
-    private boolean _visible = false;
-    private static MyApplication _application;
-    private Context _context;
-
-    public static ArrayAdapter<String> listAdapter;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        if (_application == null){
-            Log.d(TAG,"_application was null. initializing _application value");
-            _application = (MyApplication) this.getApplication();
-        }
-        _application.setMainActivity(this);
-        _context = this;
+        ((MyApplication) getApplication()).setMainActivity(this);
         setContentView(R.layout.activity_main);
 
         verifyBluetooth();
         googlePlayServicesConnected();
 
         findViewById(R.id.campaignsButton).setOnClickListener(new OnClickListener() {
-
             @Override
             public void onClick(View v) {
-
                 //Sending to DetailActivity
                 Intent intent = new Intent();
                 intent.setClass(_context, DetailActivity.class);
                 startActivity(intent);
-
             }
         });
         findViewById(R.id.campaignsButton).setVisibility((areCampaignsTriggeredNow())? View.VISIBLE : View.GONE);
-
     }
 
     /**
@@ -88,18 +57,8 @@ public class MainActivity extends Activity {
     }
 
     private boolean areCampaignsTriggeredNow(){
-        if (_application == null){
-            Log.d(TAG,"_application was null. initializing _application value");
-            _application = (MyApplication) this.getApplication();
-            _application.setMainActivity(this);
-        }
-
-        if (_application.getTriggeredCampaignArray() != null && _application.getTriggeredCampaignArray().size() >0){
-            Log.d(TAG,"_application.getTriggeredCampaignArray().size() = "+_application.getTriggeredCampaignArray().size());
-            return true;
-        }
-
-        return false;
+        MyApplication app = (MyApplication) getApplication();
+        return !app.getTriggeredCampaignArray().isEmpty();
     }
 
     private void verifyBluetooth() {
@@ -151,9 +110,7 @@ public class MainActivity extends Activity {
                 });
             }
             builder.show();
-
         }
-
     }
 
 
