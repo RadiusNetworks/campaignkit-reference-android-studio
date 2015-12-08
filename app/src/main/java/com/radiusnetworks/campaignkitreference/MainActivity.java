@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.widget.Button;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
@@ -23,6 +24,11 @@ import com.google.android.gms.common.GooglePlayServicesUtil;
 public class MainActivity extends Activity {
     public static final String TAG = "MainActivity";
 
+    /**
+     * Store access to the button which displays the triggered Campaigns
+     */
+    private Button campaignsButton;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -33,7 +39,9 @@ public class MainActivity extends Activity {
         verifyBluetooth();
         googlePlayServicesConnected();
 
-        findViewById(R.id.campaignsButton).setOnClickListener(new OnClickListener() {
+        final Context that = this;
+        campaignsButton = (Button) findViewById(R.id.campaignsButton);
+        campaignsButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
                 //Sending to DetailActivity
@@ -42,7 +50,7 @@ public class MainActivity extends Activity {
                 startActivity(intent);
             }
         });
-        findViewById(R.id.campaignsButton).setVisibility((areCampaignsTriggeredNow())? View.VISIBLE : View.GONE);
+        updateCampaignsVisibility();
     }
 
     /**
@@ -51,7 +59,7 @@ public class MainActivity extends Activity {
     public void refreshVisibleList() {
         runOnUiThread(new Runnable() {
             public void run() {
-                findViewById(R.id.campaignsButton).setVisibility((areCampaignsTriggeredNow())? View.VISIBLE : View.GONE);
+                updateCampaignsVisibility();
             }
         });
     }
@@ -59,6 +67,11 @@ public class MainActivity extends Activity {
     private boolean areCampaignsTriggeredNow(){
         MyApplication app = (MyApplication) getApplication();
         return !app.getTriggeredCampaignArray().isEmpty();
+    }
+
+    private void updateCampaignsVisibility() {
+        int visibility = areCampaignsTriggeredNow() ? View.VISIBLE : View.GONE;
+        campaignsButton.setVisibility(visibility);
     }
 
     private void verifyBluetooth() {
