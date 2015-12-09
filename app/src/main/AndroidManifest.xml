@@ -2,38 +2,47 @@
           xmlns:tools="http://schemas.android.com/tools"
           package="com.radiusnetworks.campaignkitreference">
 
-    <uses-sdk tools:overrideLibrary="com.google.android.gms" />
+    <uses-sdk
+        tools:overrideLibrary="com.google.android.gms,com.google.android.gms.base,com.google.android.gms.location,com.google.android.gms.maps" />
 
-    <!-- minimum permissions for ibeacons -->
+    <!-- minimum permissions for BLE beacons -->
     <uses-permission android:name="android.permission.BLUETOOTH" />
     <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
-    <uses-permission android:name="android.permission.INTERNET" />
+
+    <!-- BLE background detection requires some permissions (these are runtime in Android 6) - uncomment this if you are not using Geofences -->
+    <!--<uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />-->
+
+    <!-- geofence usage requires some permissions (these are runtime in Android 6) -->
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+
+    <!-- necessary for syncing with the servers -->
+    <uses-permission android:name="android.permission.INTERNET" />
+
+    <!-- startup services on reboot -->
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
 
     <!-- gives permission to wake up app long enough to send campaign request while app is in background (every 5 min) -->
     <uses-permission android:name="android.permission.WAKE_LOCK" />
 
     <application
-        android:name="com.radiusnetworks.campaignkitreference.MyApplication"
+        android:name=".MyApplication"
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
         <activity
-            android:name="com.radiusnetworks.campaignkitreference.MainActivity"
+            android:name=".MainActivity"
             android:label="@string/app_name"
             android:screenOrientation="portrait" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
         <activity
-            android:name="com.radiusnetworks.campaignkitreference.DetailActivity"
+            android:name=".DetailActivity"
             android:label="@string/title_activity_detail"
-            android:parentActivityName="com.radiusnetworks.campaignkitreference.MainActivity"
+            android:parentActivityName=".MainActivity"
             android:screenOrientation="portrait" >
         </activity>
 
