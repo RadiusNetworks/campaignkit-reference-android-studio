@@ -185,7 +185,8 @@ public class MyApplication extends Application implements CampaignKitNotifier {
     public void didDetectPlace(Place place, CKEventType event) {
         Log.i(
                 TAG,
-                "didDetectPlace.  EventType: " + event.toString() + "  Place: " + place.toString()
+                "didDetectPlace.  EventType: " + event.toString() + "  Place: " + place.toString() +
+                        " (" + place.getAttributes() + ")"
         );
         Log.d(TAG, "place distance: " + place.getDistance());
     }
