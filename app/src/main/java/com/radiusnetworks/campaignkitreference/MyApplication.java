@@ -114,6 +114,16 @@ public class MyApplication extends Application implements CampaignKitNotifier {
         ckManager.start();
     }
 
+    public static void enableGeofences() throws GooglePlayServicesException {
+        // As a safety mechanism, `enableGeofences()` throws a checked exception in case the
+        // app does not properly handle Google Play support.
+        ckManager.enableGeofences();
+    }
+
+    public static void disableGeofences() {
+        ckManager.disableGeofences();
+    }
+
     /**
      * Called when a {@link Campaign} has been found.
      * <p/>
