@@ -209,11 +209,9 @@ public class MyApplication extends Application implements CampaignKitNotifier {
      * @return The modifiable list of current campaign titles.
      */
     public ArrayList<String> getTriggeredCampaignTitlesList() {
-        if (triggeredCampaigns != null) {
-            triggeredCampaignTitles.clear();
-            for (Campaign c : triggeredCampaigns) {
-                triggeredCampaignTitles.add(c.getTitle());
-            }
+        triggeredCampaignTitles.clear();
+        for (Campaign c : triggeredCampaigns) {
+            triggeredCampaignTitles.add(c.getTitle());
         }
         return triggeredCampaignTitles;
     }
@@ -240,7 +238,7 @@ public class MyApplication extends Application implements CampaignKitNotifier {
      * position exceeded the bounds.
      */
     public Campaign getCampaignFromList(int positionOnList) {
-        if (triggeredCampaigns != null && triggeredCampaigns.size() > positionOnList) {
+        if (positionOnList < triggeredCampaigns.size()) {
             return triggeredCampaigns.get(positionOnList);
         }
         return null;
