@@ -1,6 +1,11 @@
 package com.radiusnetworks.campaignkitreference;
 
+import android.app.Activity;
 import android.app.Application;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.content.Intent;
+import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
 import com.radiusnetworks.campaignkit.Campaign;
@@ -13,6 +18,7 @@ import com.radiusnetworks.campaignkit.Place;
 import com.radiusnetworks.proximity.geofence.GooglePlayServicesException;
 
 import java.io.IOException;
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Properties;
 
@@ -48,7 +54,7 @@ public class MyApplication extends Application implements CampaignKitNotifier {
     /**
      * Current main activity for notifications.
      */
-    private static volatile MainActivity mainActivity = null;
+    private static volatile WeakReference<MainActivity> mainActivity = new WeakReference<>(null);
 
     /**
      * All campaigns with their beacon within range, in order of appearance
@@ -130,14 +136,40 @@ public class MyApplication extends Application implements CampaignKitNotifier {
      */
     @Override
     public void didFindCampaign(Campaign campaign) {
+        Log.i(TAG, "didFindCampaign: " + campaign);
+
         // Force campaign to be shown in the found list
         triggeredCampaigns.add(campaign);
 
-        // Send notification or alert based on if the app is in background or foreground
-        new CampaignNotificationBuilder(mainActivity, campaign)
-                .setSmallIcon(R.drawable.ic_launcher)
-                .setOnClickActivity(DetailActivity.class)
-                .show();
+        Activity activity = mainActivity.get();
+
+        if (activity != null) {
+            // Send notification or alert based on if the app is in background or foreground
+            new CampaignNotificationBuilder(activity, campaign)
+                    .setSmallIcon(R.drawable.ic_launcher)
+                    .setOnClickActivity(DetailActivity.class)
+                    .show();
+        } else {
+            // Very basic alternative way to display a simple campaign
+            // Ref https://developer.android.com/training/notify-user/build-notification.html
+            Log.d(TAG, "BACKGROUND: didFindCampaign");
+            Intent resultIntent = new Intent(this, DetailActivity.class);
+            PendingIntent resultPendingIntent = PendingIntent.getActivity(
+                    this,
+                    0,
+                    resultIntent,
+                    PendingIntent.FLAG_UPDATE_CURRENT
+            );
+            NotificationCompat.Builder mBuilder =
+                    new NotificationCompat.Builder(this)
+                            .setSmallIcon(R.drawable.ic_launcher)
+                            .setContentTitle(campaign.getTitle())
+                            .setContentText(campaign.getMessage())
+                            .setContentIntent(resultPendingIntent);
+            NotificationManager mNotifyMgr =
+                    (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+            mNotifyMgr.notify(campaign.getIdAsInt(), mBuilder.build());
+        }
 
         // Make sure the UI is aware of the update
         refreshMainActivityList();
@@ -202,7 +234,7 @@ public class MyApplication extends Application implements CampaignKitNotifier {
      * @see #didFindCampaign(Campaign)
      */
     public void setMainActivity(MainActivity activity) {
-        mainActivity = activity;
+        mainActivity = new WeakReference<>(activity);
     }
 
     /**
@@ -250,10 +282,11 @@ public class MyApplication extends Application implements CampaignKitNotifier {
      * Refreshes the list of found campaigns on the {@link MainActivity}.
      */
     private void refreshMainActivityList() {
-        if (mainActivity != null) {
-            mainActivity.refreshVisibleList();
+        MainActivity activity = mainActivity.get();
+        if (activity != null) {
+            activity.refreshVisibleList();
         } else {
-            Log.d(TAG, "Main activity not started yet.");
+            Log.d(TAG, "Main activity not available yet.");
         }
     }
 
