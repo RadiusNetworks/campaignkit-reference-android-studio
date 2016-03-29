@@ -92,6 +92,8 @@ public class MyApplication extends Application implements CampaignKitNotifier {
             }
         }
 
+        ckManager.setSyncInterval(Configuration.MIN_SYNC_INTERVAL);
+
         /*
          * Set the desired callback before calling `start()`.
          *
@@ -327,11 +329,16 @@ public class MyApplication extends Application implements CampaignKitNotifier {
      */
     private Configuration loadConfig() {
         Properties properties = new Properties();
-        try {
-            properties.load(getAssets().open("CampaignKit.properties"));
-        } catch (IOException e) {
-            throw new IllegalStateException("Unable to load properties file!", e);
-        }
+
+        properties.setProperty(Configuration.CONFIG_API_TOKEN, "d310d1e65dfbfb2c449dacb0c74367d8c7a651e217fcab4c05401346748c165c");
+        properties.setProperty(Configuration.CONFIG_API_URL, "https://campaignkit.radiusnetworks.com/sdk/v1/kits/6");
+        properties.setProperty(Configuration.CONFIG_PK_TOKEN, "1ca9a9743f368095c2fcce37d19950d251fa3fede404ce2f28734fa109a92680");
+        properties.setProperty(Configuration.CONFIG_PK_URL, "https://proximitykit.radiusnetworks.com/api/kits/3496");
+        properties.setProperty(Configuration.CONFIG_ANALYTICS_URL, "https://analytics.radiusnetworks.com/sdk/v1/events");
+        properties.setProperty(Configuration.CONFIG_CELLULAR_DATA, "true");
+        String deviceType = "mobile";
+        properties.setProperty(Configuration.CONFIG_SEGMENT_TAGS, "android," + deviceType);
+
         return new Configuration(properties);
     }
 }
