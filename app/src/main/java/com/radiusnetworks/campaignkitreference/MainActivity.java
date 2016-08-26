@@ -77,7 +77,7 @@ public class MainActivity extends FragmentActivity {
         resolvingError = savedInstanceState != null &&
                 savedInstanceState.getBoolean(STATE_RESOLVING_ERROR, false);
 
-        ((MyApplication) getApplication()).setMainActivity(this);
+
         setContentView(R.layout.activity_main);
 
         final Context that = this;
@@ -101,8 +101,23 @@ public class MainActivity extends FragmentActivity {
     @Override
     protected void onStart() {
         super.onStart();
+        ((MyApplication) getApplication()).setMainActivity(this);
         verifyBluetooth();
         togglePermissionFeatures();
+    }
+
+    @Override
+    protected void onStop() {
+        clearReferences();
+        super.onStop();
+    }
+
+    private void clearReferences() {
+        MyApplication app = (MyApplication) getApplication();
+        Activity currentActivity = app.getMainActivity();
+        if (this.equals(currentActivity)) {
+            app.setMainActivity(null);
+        }
     }
 
     /**
@@ -179,6 +194,8 @@ public class MainActivity extends FragmentActivity {
     public void onGooglePlayDialogDismissed() {
         resolvingError = false;
     }
+
+
 
     /**
      * Refreshes <code>Listview</code> with current campaign titles.
