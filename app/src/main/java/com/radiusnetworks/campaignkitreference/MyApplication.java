@@ -289,15 +289,6 @@ public class MyApplication extends Application implements CampaignKitNotifier {
 
     /**
      * Generate the app's Campaign Kit configuration.
-     * <p/>
-     * This loads the properties for a kit from a {@code .properties} file bundled in the app. This
-     * file was be downloaded from the <a href="https://campaignkit.radiusnetworks.com">Campaign
-     * Kit server</a>.
-     * <p/>
-     * These details could just as easily been stored in a file or downloaded from a 3rd party
-     * server.
-     *
-     * @return A new {@link Configuration} configured for the app's kit.
      */
     private static Map<String, String> loadConfig() {
         Map<String, String> settings = new HashMap<>();
