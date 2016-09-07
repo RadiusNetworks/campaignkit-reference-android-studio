@@ -1,6 +1,11 @@
 package com.radiusnetworks.campaignkitreference;
 
+import android.Manifest;
 import android.app.Application;
+import android.content.Context;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.support.annotation.RequiresPermission;
 import android.util.Log;
 
 import com.radiusnetworks.campaignkit.Campaign;
@@ -12,9 +17,9 @@ import com.radiusnetworks.campaignkit.Content;
 import com.radiusnetworks.campaignkit.Place;
 import com.radiusnetworks.proximity.geofence.GooglePlayServicesException;
 
-import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Properties;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * The {@link Application} class for the Campaign Kit Demo Client.
@@ -38,12 +43,17 @@ public class MyApplication extends Application implements CampaignKitNotifier {
     /**
      * Storage for an instance of the manager
      */
-    private static CampaignKitManager ckManager = null;
+    private static volatile CampaignKitManager ckManager = null;
 
     /**
      * Object to use as a thread-safe lock
      */
-    private static final Object ckManagerLock = new Object();
+    private static final Object SHARED_LOCK = new Object();
+
+    /**
+     * Campaign Kit Configuration
+     */
+    private static final Configuration KIT_CONFIG = new Configuration(loadConfig());
 
     /**
      * Current main activity for notifications.
@@ -56,20 +66,14 @@ public class MyApplication extends Application implements CampaignKitNotifier {
     public static ArrayList<Campaign> triggeredCampaigns = new ArrayList<>();
 
     /**
-     * Titles of all campaigns with their beacon within range, in same order
-     */
-    public static ArrayList<String> triggeredCampaignTitles = new ArrayList<>();
-
-    /**
      * Setup the application including the Campaign Kit manager.
      * <p/>
      * It is the job of the application to ensure that Google Play services is available before
      * enabling geofences in Campaign Kit.
      * <p/>
-     * A good place to do this is when we set the Campaign Kit manager instance. However there are
-     * issues with this decision. See the notes in {@link #servicesConnected()} for details.
+     * As this app targets Android 6 Marshmallow the permission is a runtime check. We check for
+     * it in the main activity instead of here as it could change at any time.
      *
-     * @see #servicesConnected()
      * @see <a href="https://developer.android.com/google/play-services/setup.html">
      *          Setup Google Play services
      *      </a>
@@ -86,9 +90,11 @@ public class MyApplication extends Application implements CampaignKitNotifier {
          * single manager instance is created inside an `Activity` or other Android/Java component.
          * We're including the pattern here to show a method of ensuring a singleton instance.
          */
-        synchronized (ckManagerLock) {
-            if (ckManager == null) {
-                ckManager = CampaignKitManager.getInstance(this, loadConfig());
+        if (null == ckManager) {
+            synchronized (SHARED_LOCK) {
+                if (null == ckManager) {
+                    ckManager = CampaignKitManager.getInstance(this, KIT_CONFIG);
+                }
             }
         }
 
@@ -106,9 +112,17 @@ public class MyApplication extends Application implements CampaignKitNotifier {
         ckManager.start();
     }
 
+    @RequiresPermission(Manifest.permission.ACCESS_FINE_LOCATION)
     public static void enableGeofences() throws GooglePlayServicesException {
-        // As a safety mechanism, `enableGeofences()` throws a checked exception in case the
-        // app does not properly handle Google Play support.
+        /*
+         * As a safety mechanism, `enableGeofences()` throws a checked exception in case the app
+         * does not properly handle Google Play support. We expose this on the method so that the
+         * caller, presumably an `Activity`, can decide how best to handle it.
+         *
+         * We've disable the lint inspection because we've moved the permission requirement to the
+         * method via the annotation.
+         */
+        //noinspection MissingPermission
         ckManager.enableGeofences();
     }
 
@@ -127,12 +141,14 @@ public class MyApplication extends Application implements CampaignKitNotifier {
      *         The {@link Campaign} found after entering a configured region.
      */
     @Override
-    public void didFindCampaign(Campaign campaign) {
+    public void didFindCampaign(@NonNull Campaign campaign) {
+        Log.i(TAG, "didFindCampaign: " + campaign);
         // Force campaign to be shown in the found list
         triggeredCampaigns.add(campaign);
 
         // Send notification or alert based on if the app is in background or foreground
-        new CampaignNotificationBuilder(mainActivity, campaign)
+        Context notificationTarget = (null == mainActivity) ? this : mainActivity;
+        new CampaignNotificationBuilder(notificationTarget, campaign)
                 .setSmallIcon(R.drawable.ic_launcher)
                 .setOnClickActivity(DetailActivity.class)
                 .show();
@@ -159,12 +175,8 @@ public class MyApplication extends Application implements CampaignKitNotifier {
      *         The exception encountered while syncing
      */
     @Override
-    public void didFailSync(Exception e) {
-        if (e == null) {
-            Log.e(TAG, "didFailSync.");
-        } else {
-            Log.e(TAG, "didFailSync.", e);
-        }
+    public void didFailSync(@NonNull Exception e) {
+        Log.e(TAG, "didFailSync.", e);
     }
 
     /**
@@ -182,13 +194,19 @@ public class MyApplication extends Application implements CampaignKitNotifier {
      * @see CKEventType
      */
     @Override
-    public void didDetectPlace(Place place, CKEventType event) {
+    public void didDetectPlace(@NonNull Place place, @NonNull CKEventType event) {
         Log.i(
                 TAG,
-                "didDetectPlace.  EventType: " + event.toString() + "  Place: " + place.toString() +
-                        " (" + place.getAttributes() + ")"
+                "didDetectPlace: event=" + event +
+                        " place={" + place +
+                        " distance=" + place.getDistance() +
+                        " (" + place.getAttributes() + ")}"
         );
-        Log.d(TAG, "place distance: " + place.getDistance());
+    }
+
+    @Nullable
+    public MainActivity getMainActivity() {
+        return mainActivity;
     }
 
     /**
@@ -199,21 +217,8 @@ public class MyApplication extends Application implements CampaignKitNotifier {
      *         {@link Campaign}.
      * @see #didFindCampaign(Campaign)
      */
-    public void setMainActivity(MainActivity activity) {
+    public void setMainActivity(@Nullable MainActivity activity) {
         mainActivity = activity;
-    }
-
-    /**
-     * Refreshes {@link #triggeredCampaignTitles} before returning it.
-     *
-     * @return The modifiable list of current campaign titles.
-     */
-    public ArrayList<String> getTriggeredCampaignTitlesList() {
-        triggeredCampaignTitles.clear();
-        for (Campaign c : triggeredCampaigns) {
-            triggeredCampaignTitles.add(c.getTitle());
-        }
-        return triggeredCampaignTitles;
     }
 
     /**
@@ -289,49 +294,37 @@ public class MyApplication extends Application implements CampaignKitNotifier {
      * file was be downloaded from the <a href="https://campaignkit.radiusnetworks.com">Campaign
      * Kit server</a>.
      * <p/>
-     * For newer Android applications, the file can be added to the {@code /assets} folder:
-     * <p/>
-     * <pre>
-     * {@code Properties properties = new Properties();
-     * try {
-     *     properties.load(getAssets().open("CampaignKit.properties"));
-     * } catch (IOException e) {
-     *     throw new IllegalStateException("Unable to load properties file!", e);
-     * }
-     * new Configuration(properties);
-     * }
-     * </pre>
-     * <p/>
-     * For older Android applications, or if you just prefer using Java resources, the file can be
-     * added to the {@code /resources} folder:
-     * <p/>
-     * <pre>
-     * {@code Properties properties = new Properties();
-     * InputStream in = getClassLoader().getResourceAsStream("CampaignKit.properties");
-     * if (in == null) {
-     *     throw new IllegalStateException("Unable to find CampaignKit.properties files");
-     * }
-     * try {
-     *     properties.load(in);
-     * } catch (IOException e) {
-     *     throw new IllegalStateException("Unable to load properties file!", e);
-     * }
-     * new Configuration(properties);
-     * }
-     * </pre>
-     * <p/>
-     * These details could just as easily been statically compiled into the app. They also could
-     * have been downloaded from a 3rd party server.
+     * These details could just as easily been stored in a file or downloaded from a 3rd party
+     * server.
      *
      * @return A new {@link Configuration} configured for the app's kit.
      */
-    private Configuration loadConfig() {
-        Properties properties = new Properties();
-        try {
-            properties.load(getAssets().open("CampaignKit.properties"));
-        } catch (IOException e) {
-            throw new IllegalStateException("Unable to load properties file!", e);
-        }
-        return new Configuration(properties);
+    private static Map<String, String> loadConfig() {
+        Map<String, String> settings = new HashMap<>();
+
+        settings.put(
+                Configuration.CONFIG_API_TOKEN,
+                "d310d1e65dfbfb2c449dacb0c74367d8c7a651e217fcab4c05401346748c165c"
+        );
+        settings.put(
+                Configuration.CONFIG_API_URL,
+                "https://campaignkit.radiusnetworks.com/sdk/v1/kits/6"
+        );
+        settings.put(
+                Configuration.CONFIG_PK_TOKEN,
+                "1ca9a9743f368095c2fcce37d19950d251fa3fede404ce2f28734fa109a92680"
+        );
+        settings.put(
+                Configuration.CONFIG_PK_URL,
+                "https://proximitykit.radiusnetworks.com/api/kits/3496"
+        );
+        settings.put(
+                Configuration.CONFIG_ANALYTICS_URL,
+                "https://analytics.radiusnetworks.com/sdk/v1/events"
+        );
+        settings.put(Configuration.CONFIG_CELLULAR_DATA, "true");
+        settings.put(Configuration.CONFIG_SEGMENT_TAGS, "android,refapp");
+
+        return settings;
     }
 }

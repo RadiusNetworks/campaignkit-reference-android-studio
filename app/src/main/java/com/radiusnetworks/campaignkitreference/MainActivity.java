@@ -356,12 +356,6 @@ public class MainActivity extends FragmentActivity {
      */
     @TargetApi(Build.VERSION_CODES.M)
     private void togglePermissionFeatures() {
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
-            // All permissions requested at install time
-            enableGeofences();
-            return;
-        }
-
         // We may already have permission so we need to check
         // If you are not using geofences you should request ACCESS_COARSE_LOCATION:
         // String permission = Manifest.permission.ACCESS_COARSE_LOCATION;
@@ -373,6 +367,7 @@ public class MainActivity extends FragmentActivity {
         }
 
         // Location access has not been granted
+        disableGeofences();
 
         /*
          * Check if we should provide an additional rationale to the user if the permission was not

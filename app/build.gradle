@@ -6,10 +6,10 @@ android {
 
     defaultConfig {
         applicationId "com.radiusnetworks.campaignkitreference"
-        minSdkVersion 7
+        minSdkVersion 9
         targetSdkVersion 23
-        versionCode 6
-        versionName "1.5.0"
+        versionCode 7
+        versionName "1.6.0"
     }
     buildTypes {
         release {
@@ -26,9 +26,9 @@ android {
     }
 }
 dependencies {
-    compile 'com.google.android.gms:play-services-location:8.3.0'
+    compile 'com.google.android.gms:play-services-location:9.4.0'
     compile fileTree(dir: 'libs', include: ['*.jar'])
-    compile 'com.radiusnetworks:campaignkit-android:0.6.1@aar'
+    compile 'com.radiusnetworks:campaignkit-android:0.12.0@aar'
     compile 'com.android.support:appcompat-v7:23.1.1'
 }
 
