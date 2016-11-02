@@ -315,6 +315,7 @@ public class MyApplication extends Application implements CampaignKitNotifier {
         );
         settings.put(Configuration.CONFIG_CELLULAR_DATA, "true");
         settings.put(Configuration.CONFIG_SEGMENT_TAGS, "android,refapp");
+        settings.put(Configuration.CONFIG_SYNC_INTERVAL, "43200000");       // once every 12 hours
 
         return settings;
     }
