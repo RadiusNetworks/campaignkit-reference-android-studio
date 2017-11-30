@@ -15,6 +15,7 @@ import com.radiusnetworks.campaignkit.CampaignNotificationBuilder;
 import com.radiusnetworks.campaignkit.Configuration;
 import com.radiusnetworks.campaignkit.Content;
 import com.radiusnetworks.campaignkit.Place;
+import com.radiusnetworks.proximity.geofence.GeofenceServiceManager;
 import com.radiusnetworks.proximity.geofence.GooglePlayServicesException;
 
 import java.util.ArrayList;
@@ -82,6 +83,8 @@ public class MyApplication extends Application implements CampaignKitNotifier {
     public void onCreate() {
         super.onCreate();
 
+        GeofenceServiceManager.debugOn();
+
         /*
          * The app is responsible for handling the singleton instance of the Campaign Kit manager.
          * To ensure we have a single instance we synchronize our creation process.
@@ -147,8 +150,8 @@ public class MyApplication extends Application implements CampaignKitNotifier {
         triggeredCampaigns.add(campaign);
 
         // Send notification or alert based on if the app is in background or foreground
-        Context notificationTarget = (null == mainActivity) ? this : mainActivity;
-        new CampaignNotificationBuilder(notificationTarget, campaign)
+//        Context notificationTarget = (null == mainActivity) ? this : mainActivity;
+        new CampaignNotificationBuilder(this, campaign)
                 .setSmallIcon(R.drawable.ic_launcher)
                 .setOnClickActivity(DetailActivity.class)
                 .show();
