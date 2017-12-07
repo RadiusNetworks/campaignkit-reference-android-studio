@@ -38,7 +38,7 @@ import java.util.Map;
  * @see {@link CampaignKitNotifier}
  */
 public class MyApplication extends Application implements CampaignKitNotifier {
-    public static final String TAG = "MyApplication";
+    private static final String TAG = BuildConfig.FLAVOR + "-MyApplication";
 
     /**
      * Storage for an instance of the manager

@@ -2,9 +2,6 @@
           xmlns:tools="http://schemas.android.com/tools"
           package="com.radiusnetworks.campaignkitreference">
 
-    <uses-sdk
-        tools:overrideLibrary="com.google.android.gms,com.google.android.gms.base,com.google.android.gms.location,com.google.android.gms.maps" />
-
     <!-- minimum permissions for BLE beacons -->
     <uses-permission android:name="android.permission.BLUETOOTH" />
     <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE resources [
+    <!ENTITY flavor "API 26">
+    ]>
+<resources>
+
+    <string name="flavor_app_name">CampaignKit Reference &flavor;</string>
+
+</resources>

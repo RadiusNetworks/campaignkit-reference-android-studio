@@ -4,7 +4,6 @@ import android.Manifest;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -12,16 +11,12 @@ import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.Toast;
-
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.GoogleApiAvailability;
 
 import com.radiusnetworks.proximity.geofence.GooglePlayServicesException;
 
@@ -32,12 +27,7 @@ import com.radiusnetworks.proximity.geofence.GooglePlayServicesException;
  * CampaignKitManager.getFoundCampaigns() method.
  */
 public class MainActivity extends FragmentActivity {
-    public static final String TAG = "MainActivity";
-
-    /**
-     * Unique tag for the error code in the dialog fragment bundle
-     */
-    private static final String DIALOG_ERROR = "dialog_error";
+    private static final String TAG = BuildConfig.FLAVOR + "-MainActivity";
 
     /**
      * Request code to use when launching the location permission resolution activity
@@ -143,9 +133,8 @@ public class MainActivity extends FragmentActivity {
      * the app is already attempting to resolve an error.
      * <p/>
      * In {@code togglePermissionFeatures()} we set a boolean to {@code true} each time we call
-     * it or when we display the dialog from {@link
-     * GoogleApiAvailability#getErrorDialog(Activity, int, int)}. Then when we receive our {@link
-     * #RESULT_OK} response we set it back to {@code false}.
+     * it or when we display the dialog from {@link #isGooglePlayServicesAvailable()}. Then when we
+     * receive our {@link #RESULT_OK} response we set it back to {@code false}.
      * <p/>
      * To keep track of the boolean across activity restarts (such as when the user rotates the
      * screen), we save the boolean in the saved instance data.
@@ -194,8 +183,6 @@ public class MainActivity extends FragmentActivity {
     public void onGooglePlayDialogDismissed() {
         resolvingError = false;
     }
-
-
 
     /**
      * Refreshes <code>Listview</code> with current campaign titles.
@@ -272,67 +259,38 @@ public class MainActivity extends FragmentActivity {
     /**
      * Verify that Google Play services is available.
      * <p/>
-     * If the service is not available it could be due to several reasons. We take the easy way out
-     * in this demo and simply log the error. We then use the utility class provided to pop a
-     * notification to the end user with the message.
-     * <p/>
-     * Google Play services controls the text and content of this notification. We could roll our
-     * own notification, display a dialog (which would require an Activity context), or do something
-     * else. This is why it is our (the app) responsibility to make this decision and not left up to
-     * Campaign Kit.
+     * If the service is not available it could be due to several reasons. We use the utility
+     * class provided to pop a notification to the end user with the error message.
      *
      * @return {@code true} if Google Play services is available, otherwise {@code false}
      * @see <a href="https://developers.google.com/android/guides/setup">Setting up Google Play
      * Services</a>
-     * @see GoogleApiAvailability#isGooglePlayServicesAvailable(Context)
+     * @see GooglePlayUtil
      */
     private boolean isGooglePlayServicesAvailable() {
         if (resolvingError) {
             // Already attempting to resolve an error.
             return false;
         }
-
-        GoogleApiAvailability apiAvailability = GoogleApiAvailability.getInstance();
-
-        // Check that Google Play services is available
+        GooglePlayUtil apiAvailability = GooglePlayUtil.getInstance();
         int statusCode = apiAvailability.isGooglePlayServicesAvailable(this);
-        switch (statusCode) {
-            case ConnectionResult.SUCCESS:
-                Log.d(TAG, "Google Play Service available");
-                return true;
-            case ConnectionResult.SERVICE_MISSING:
-            case ConnectionResult.SERVICE_UPDATING:
-            case ConnectionResult.SERVICE_VERSION_UPDATE_REQUIRED:
-            case ConnectionResult.SERVICE_DISABLED:
-            case ConnectionResult.SERVICE_INVALID:
-                // Taking the easy way out: log it.
-                Log.w(TAG, apiAvailability.getErrorString(statusCode));
-                showGooglePlayErrorDialog(statusCode);
-                resolvingError = true;
+        if (GooglePlayUtil.SUCCESS == statusCode) {
+            resolvingError = false;
+        } else {
+            resolvingError = true;
+            apiAvailability.showErrorDialogFragment(
+                    this,
+                    statusCode,
+                    REQUEST_RESOLVE_ERROR,
+                    new DialogInterface.OnCancelListener() {
+                        @Override
+                        public void onCancel(DialogInterface dialogInterface) {
+                            onGooglePlayDialogDismissed();
+                        }
+                    }
+            );
         }
-
-        return false;
-    }
-
-    /**
-     * Display a dialog to the user explaining the Google Play Service error.
-     * <p/>
-     * Try to get the error dialog from {@link GoogleApiAvailability} so it can properly provide a
-     * consistent experience for the user.
-     *
-     * @param errorCode
-     *         The code to provide to {@link GoogleApiAvailability} to tell it which dialog message
-     *         is needed.
-     */
-    private void showGooglePlayErrorDialog(int errorCode) {
-        // Create a fragment for the error dialog
-        ErrorDialogFragment dialogFragment = new ErrorDialogFragment();
-
-        // Pass the error that should be displayed
-        Bundle args = new Bundle();
-        args.putInt(DIALOG_ERROR, errorCode);
-        dialogFragment.setArguments(args);
-        dialogFragment.show(getSupportFragmentManager(), "errordialog");
+        return !resolvingError;
     }
 
     /**
@@ -465,29 +423,5 @@ public class MainActivity extends FragmentActivity {
     private boolean verifyLocationServices() {
         // TODO: Implement this
         return true;
-    }
-
-    /**
-     * A fragment to display an error dialog
-     */
-    public static class ErrorDialogFragment extends DialogFragment {
-        public ErrorDialogFragment() {
-        }
-
-        @Override
-        public Dialog onCreateDialog(Bundle savedInstanceState) {
-            // Get the error code and retrieve the appropriate dialog
-            int errorCode = getArguments().getInt(DIALOG_ERROR);
-            return GoogleApiAvailability.getInstance().getErrorDialog(
-                    getActivity(),
-                    errorCode,
-                    REQUEST_RESOLVE_ERROR
-            );
-        }
-
-        @Override
-        public void onDismiss(DialogInterface dialog) {
-            ((MainActivity) getActivity()).onGooglePlayDialogDismissed();
-        }
     }
 }

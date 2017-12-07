@@ -16,7 +16,7 @@ import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 
 public class DetailActivity extends FragmentActivity {
-	protected static final String TAG = "DetailActivity";
+	protected static final String TAG = BuildConfig.FLAVOR + "-DetailActivity";
 	public static final String KEY_CAMPAIGN_ID = "campaignId";
 	
 	private DetailActivity _instance;

@@ -4,31 +4,80 @@ repositories {
     flatDir {
         dirs 'libs'
     }
+    maven {
+        url 'https://maven.google.com/'
+        name 'Google'
+    }
 }
 
 android {
-    compileSdkVersion 24
-    buildToolsVersion '24.0.2'
-
+    buildToolsVersion '26.0.2'
     defaultConfig {
-        applicationId "com.radiusnetworks.campaignkitreference"
-        minSdkVersion 9
-        targetSdkVersion 24
+        applicationId 'com.radiusnetworks.campaignkitreference'
         versionCode 7
         versionName "1.6.0"
     }
-
     buildTypes {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+
+    // NOTE: If you want to run these side-by-side to compare simultaneous behavior uncomment the
+    // applicationIdSuffix lines.
+    productFlavors {
+        api19 {                   // Android 4.4
+            minSdkVersion 7
+            compileSdkVersion 19
+            targetSdkVersion 19
+            //applicationIdSuffix ".api19"
+        }
+        api21 {                   // Android 5.0
+            minSdkVersion 7
+            compileSdkVersion 21
+            targetSdkVersion 21
+            //applicationIdSuffix ".api21"
+        }
+        api23 {                   // Android 6.0
+            minSdkVersion 9
+            compileSdkVersion 23
+            targetSdkVersion 23
+            //applicationIdSuffix ".api23"
+        }
+        api24 {                   // Android 7.0
+            minSdkVersion 9
+            compileSdkVersion 24
+            targetSdkVersion 24
+            //applicationIdSuffix ".api24"
+        }
+
+        api26 {                   // Android 8.0
+            minSdkVersion 14
+            compileSdkVersion 26
+            targetSdkVersion 26
+            //applicationIdSuffix ".api26"
+        }
+    }
 }
 
 dependencies {
-    compile 'com.google.android.gms:play-services-location:9.4.0'
-    compile fileTree(dir: 'libs', include: ['*.jar'])
+    compile fileTree(include: ['*.jar'], dir: 'libs')
     compile 'com.radiusnetworks:campaignkit-android:0.12.2@aar'
-    compile 'com.android.support:appcompat-v7:24.2.1'
+    compile 'com.android.support:support-annotations:27.0.2'
+
+    api19Compile 'com.android.support:appcompat-v7:19.1.0'
+    api19Compile 'com.google.android.gms:play-services:5.0.89'
+
+    api21Compile 'com.android.support:appcompat-v7:21.0.3'
+    api21Compile 'com.google.android.gms:play-services-location:6.5.87'
+
+    api23Compile 'com.android.support:appcompat-v7:23.1.1'
+    api23Compile 'com.google.android.gms:play-services-location:9.4.0'
+
+    api24Compile 'com.android.support:appcompat-v7:24.2.1'
+    api24Compile 'com.google.android.gms:play-services-location:9.4.0'
+
+    api26Compile 'com.android.support:appcompat-v7:26.1.0'
+    api26Compile 'com.google.android.gms:play-services-location:11.6.0'
 }
