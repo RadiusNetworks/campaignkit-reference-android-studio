@@ -7,7 +7,7 @@ repositories {
 }
 
 android {
-    buildToolsVersion '26.0.2'
+    buildToolsVersion '27.0.2'
     compileSdkVersion rootProject.ext.compileSdkVersion
 
     defaultConfig {
@@ -22,59 +22,71 @@ android {
         }
     }
 
+    flavorDimensions "targetApi"
+
     // NOTE: If you want to run these side-by-side to compare simultaneous behavior uncomment the
     // applicationIdSuffix lines.
     productFlavors {
         api19 {                   // Android 4.4
+            dimension "targetApi"
             minSdkVersion 7
             targetSdkVersion 19
             //applicationIdSuffix ".api19"
+            versionNameSuffix "-api19"
         }
         api21 {                   // Android 5.0
+            dimension "targetApi"
             minSdkVersion 7
             targetSdkVersion 21
             //applicationIdSuffix ".api21"
+            versionNameSuffix "-api21"
         }
         api23 {                   // Android 6.0
+            dimension "targetApi"
             minSdkVersion 9
             targetSdkVersion 23
             //applicationIdSuffix ".api23"
+            versionNameSuffix "-api23"
         }
         api24 {                   // Android 7.0
+            dimension "targetApi"
             minSdkVersion 9
             targetSdkVersion 24
             //applicationIdSuffix ".api24"
+            versionNameSuffix "-api24"
         }
         api26 {                   // Android 8.0
+            dimension "targetApi"
             minSdkVersion 14
             targetSdkVersion 26
             //applicationIdSuffix ".api26"
+            versionNameSuffix "-api26"
         }
     }
 
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_7
-        targetCompatibility JavaVersion.VERSION_1_7
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
     }
 }
 
 dependencies {
-    compile fileTree(include: ['*.jar'], dir: 'libs')
-    compile 'com.radiusnetworks:campaignkit-android:0.12.2@aar'
-    compile 'com.android.support:support-annotations:27.0.2'
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
+    implementation 'com.radiusnetworks:campaignkit-android:0.12.2@aar'
+    implementation 'com.android.support:support-annotations:27.0.2'
 
-    api19Compile 'com.android.support:appcompat-v7:19.1.0'
-    api19Compile 'com.google.android.gms:play-services:5.0.89'
+    api19Implementation 'com.android.support:appcompat-v7:19.1.0'
+    api19Implementation 'com.google.android.gms:play-services:5.0.89'
 
-    api21Compile 'com.android.support:appcompat-v7:21.0.3'
-    api21Compile 'com.google.android.gms:play-services-location:6.5.87'
+    api21Implementation 'com.android.support:appcompat-v7:21.0.3'
+    api21Implementation 'com.google.android.gms:play-services-location:6.5.87'
 
-    api23Compile 'com.android.support:appcompat-v7:23.1.1'
-    api23Compile 'com.google.android.gms:play-services-location:9.4.0'
+    api23Implementation 'com.android.support:appcompat-v7:23.1.1'
+    api23Implementation 'com.google.android.gms:play-services-location:9.4.0'
 
-    api24Compile 'com.android.support:appcompat-v7:24.2.1'
-    api24Compile 'com.google.android.gms:play-services-location:9.4.0'
+    api24Implementation 'com.android.support:appcompat-v7:24.2.1'
+    api24Implementation 'com.google.android.gms:play-services-location:9.4.0'
 
-    api26Compile 'com.android.support:appcompat-v7:26.1.0'
-    api26Compile 'com.google.android.gms:play-services-location:11.6.0'
+    api26Implementation 'com.android.support:appcompat-v7:26.1.0'
+    api26Implementation 'com.google.android.gms:play-services-location:11.6.2'
 }
