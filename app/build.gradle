@@ -4,14 +4,12 @@ repositories {
     flatDir {
         dirs 'libs'
     }
-    maven {
-        url 'https://maven.google.com/'
-        name 'Google'
-    }
 }
 
 android {
     buildToolsVersion '26.0.2'
+    compileSdkVersion rootProject.ext.compileSdkVersion
+
     defaultConfig {
         applicationId 'com.radiusnetworks.campaignkitreference'
         versionCode 7
@@ -29,35 +27,34 @@ android {
     productFlavors {
         api19 {                   // Android 4.4
             minSdkVersion 7
-            compileSdkVersion 19
             targetSdkVersion 19
             //applicationIdSuffix ".api19"
         }
         api21 {                   // Android 5.0
             minSdkVersion 7
-            compileSdkVersion 21
             targetSdkVersion 21
             //applicationIdSuffix ".api21"
         }
         api23 {                   // Android 6.0
             minSdkVersion 9
-            compileSdkVersion 23
             targetSdkVersion 23
             //applicationIdSuffix ".api23"
         }
         api24 {                   // Android 7.0
             minSdkVersion 9
-            compileSdkVersion 24
             targetSdkVersion 24
             //applicationIdSuffix ".api24"
         }
-
         api26 {                   // Android 8.0
             minSdkVersion 14
-            compileSdkVersion 26
             targetSdkVersion 26
             //applicationIdSuffix ".api26"
         }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_7
+        targetCompatibility JavaVersion.VERSION_1_7
     }
 }
 

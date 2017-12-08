@@ -19,6 +19,38 @@ buildscript {
 allprojects {
     repositories {
         jcenter()
+        maven {
+            url 'https://maven.google.com/'
+            name 'Google'
+        }
+    }
+}
+
+/*
+ * This is to support treating this reference app as an integration testing platform. You do **NOT**
+ * want to do this in a real production app. However, to test the Campaign Kit SDK builds as drop-in
+ * replacements on legacy apps this is a necessary hoop to jump through.
+ */
+ext {
+    switch ( properties.get("android.injected.restrict.variant.name") ) {
+        case ~/api19.*/:
+            compileSdkVersion = 19
+            break;
+        case ~/api21.*/:
+            compileSdkVersion = 21
+            break;
+        case ~/api23.*/:
+            compileSdkVersion = 23
+            break;
+        case ~/api24.*/:
+            compileSdkVersion = 24
+            break;
+        case ~/api26.*/:
+            compileSdkVersion = 26
+            break;
+        default:
+            // Null case (i.e. gradle sync)
+            compileSdkVersion = 26
     }
 }
 
